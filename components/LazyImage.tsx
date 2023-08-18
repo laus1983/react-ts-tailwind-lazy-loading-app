@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 type Props = { image: string };
 
-export const RandomFox = ({ image }: Props): JSX.Element => {
+export const LazyImage = ({ image }: Props): JSX.Element => {
   const node = useRef<HTMLImageElement>(null);
   const [isIntersecting, setIsIntersecting] = useState("");
   useEffect(() => {

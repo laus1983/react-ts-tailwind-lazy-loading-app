@@ -3,7 +3,7 @@
 // import Image from "next/image";
 import { useState } from "react";
 import type { MouseEventHandler } from "react";
-import { RandomFox } from "../components/RandomFox";
+import { LazyImage } from "../components/LazyImage";
 
 const getRandomInt = () => Math.floor(Math.random() * 123) + 1; //Generar un numero aleatorio entre 1 y 123
 
@@ -32,7 +32,7 @@ export default function Home() {
       <button onClick={addNewFox}>Cargar nueva imagen</button>
       {images.map(({ id, url }) => (
         <div className="p-4" key={id}>
-          <RandomFox image={url} />
+          <LazyImage image={url} />
         </div>
       ))}
     </main>
