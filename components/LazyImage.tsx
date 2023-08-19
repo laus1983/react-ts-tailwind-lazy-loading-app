@@ -1,23 +1,45 @@
 import { useRef, useEffect, useState } from "react";
-type Props = { image: string };
+import type { ImgHTMLAttributes } from "react";
 
-export const LazyImage = ({ image }: Props): JSX.Element => {
+type LazyImageProps = {
+  src: string;
+  onLazyLoad?: (img: HTMLImageElement) => void;
+};
+type ImgNativeProps = ImgHTMLAttributes<HTMLImageElement>;
+type Props = LazyImageProps & ImgNativeProps;
+
+export const LazyImage = ({
+  src,
+  onLazyLoad,
+  ...imgProps
+}: Props): JSX.Element => {
   const node = useRef<HTMLImageElement>(null);
+  const [isLazyLoaded, setIsLazyLoaded] = useState(false);
   const [isIntersecting, setIsIntersecting] = useState("");
   useEffect(() => {
+    if (isLazyLoaded) {
+      return;
+    }
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(image);
+        if (!entry.isIntersecting || !node.current) {
+          return;
+        }
+        setIsIntersecting(src);
+        observer.disconnect();
+        setIsLazyLoaded(true);
+        if (typeof onLazyLoad === "function") {
+          onLazyLoad(node.current);
         }
       });
     });
+
     if (node.current) {
       observer.observe(node.current);
     }
 
     return () => observer.disconnect();
-  }, [image]);
+  }, [src, isLazyLoaded, onLazyLoad]);
 
   return (
     <div className="flex justify-center">
@@ -26,6 +48,7 @@ export const LazyImage = ({ image }: Props): JSX.Element => {
         src={isIntersecting}
         alt="Random fox image"
         className="w-1/2 rounded bg-gray-300"
+        {...imgProps}
       />
     </div>
   );

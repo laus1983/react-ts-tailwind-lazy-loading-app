@@ -9,14 +9,12 @@ const getRandomInt = () => Math.floor(Math.random() * 123) + 1; //Generar un num
 
 const generateId = () => Math.random().toString(36).substr(2, 9); //generar un id unico para cada imagen
 
-type ImageInfo = { id: string; url: string };
-
 export default function Home() {
-  const [images, setImages] = useState<Array<ImageInfo>>([]);
+  const [images, setImages] = useState<Array<IFoxImageInfo>>([]);
 
   const addNewFox: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
-    const newImage: ImageInfo = {
+    const newImage: IFoxImageInfo = {
       id: generateId(),
       url: `https://randomfox.ca/images/${getRandomInt()}.jpg`,
     };
@@ -30,9 +28,15 @@ export default function Home() {
         Component Lazy Loading Image
       </h1>
       <button onClick={addNewFox}>Cargar nueva imagen</button>
-      {images.map(({ id, url }) => (
+      {images.map(({ id, url }, index) => (
         <div className="p-4" key={id}>
-          <LazyImage image={url} />
+          <LazyImage
+            src={url}
+            onClick={() => console.log("Random Fox")}
+            onLazyLoad={(img) => {
+              console.log(`Image #${index + 1} cargada. Nodo:`, img);
+            }}
+          />
         </div>
       ))}
     </main>
